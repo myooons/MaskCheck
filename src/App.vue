@@ -3,9 +3,6 @@
     <Head title="Camera" />
     <div class="flex flex-col justify-center items-center">
       <div>Teachable Machine Image Model</div>
-      <button class="bg-blue-400 p-2 rounded" type="button" @click="init">
-        Start
-      </button>
 
       <div id="webcam-container"></div>
       CAMERA
@@ -43,7 +40,7 @@ export default {
     };
   },
   mounted() {
-    // this.init();
+    this.init();
   },
   methods: {
     // Load the image model and setup the webcam
