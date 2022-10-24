@@ -89,9 +89,11 @@ export default {
         this.labelContainer.childNodes[i].innerHTML = classPrediction;
 
         if (prediction[0].probability > prediction[1].probability) {
-          this.labelContainer.childNodes[0].innerHTML = "쓰셨군요!";
+          this.resultContainer = document.getElementById("result-container");
+
+          this.resultContainer.childNodes[0].innerHTML = "쓰셨군요!";
         } else {
-          this.labelContainer.childNodes[0].innerHTML = "안셨군요!";
+          this.resultContainer.childNodes[0].innerHTML = "안쓰셨군요!";
         }
       }
     },
@@ -131,12 +133,13 @@ export default {
 }
 
 #title-container {
-  padding: 3rem;
-  font-size: 2rem;
+  padding: 2rem;
+  font-size: 1.8rem;
   font-family: "Poor Story", cursive;
 }
 
 #webcam-container {
+  padding: 0.5rem;
   width: 250px;
   height: 250px;
   border: 1px solid #35495e;
