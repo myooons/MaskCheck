@@ -111,7 +111,7 @@ export default {
 .template-box {
   min-width: 375px;
   width: 100vw;
-  height: 100vh;
+  height: 140vh;
 
   display: flex;
   justify-content: center;
