@@ -133,7 +133,7 @@ export default {
 }
 
 #title-container {
-  padding: 2rem;
+  padding: 2.5rem;
   font-size: 1.8rem;
   font-family: "Poor Story", cursive;
 }
