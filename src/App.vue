@@ -58,7 +58,7 @@ export default {
 
       // Convenience function to setup a webcam
       const flip = true; // whether to flip the webcam
-      this.webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+      this.webcam = new tmImage.Webcam(250, 250, flip); // width, height, flip
       await this.webcam.setup(); // request access to the webcam
       await this.webcam.play();
       window.requestAnimationFrame(this.loop);
@@ -87,6 +87,12 @@ export default {
         const classPrediction =
           prediction[i].className + ": " + prediction[i].probability.toFixed(2);
         this.labelContainer.childNodes[i].innerHTML = classPrediction;
+
+        if (prediction[0].probability > prediction[1].probability) {
+          this.labelContainer.childNodes[0].innerHTML = "쓰셨군요!";
+        } else {
+          this.labelContainer.childNodes[0].innerHTML = "안셨군요!";
+        }
       }
     },
   },
@@ -126,7 +132,7 @@ export default {
 
 #title-container {
   padding: 3rem;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-family: "Poor Story", cursive;
 }
 
@@ -137,7 +143,8 @@ export default {
 }
 
 #label-container {
-  font-size: 1rem;
+  padding: 3rem;
+  font-size: 1.5rem;
   font-family: "Poor Story", cursive;
 }
 #result-container {
