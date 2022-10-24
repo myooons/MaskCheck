@@ -72,6 +72,8 @@ export default {
         // and class labels
         this.labelContainer.appendChild(document.createElement("div"));
       }
+      this.resultContainer = document.getElementById("result-container");
+      this.resultContainer.appendChild(document.createElement("div"));
     },
     async loop() {
       this.webcam.update(); // update the webcam frame
@@ -89,9 +91,6 @@ export default {
         this.labelContainer.childNodes[i].innerHTML = classPrediction;
 
         if (prediction[0].probability > prediction[1].probability) {
-          this.resultContainer = document.getElementById("result-container");
-          this.resultContainer.appendChild(document.createElement("div"));
-
           this.resultContainer.childNodes[0].innerHTML = "쓰셨군요!";
         } else {
           this.resultContainer.childNodes[0].innerHTML = "안쓰셨군요!";
@@ -147,7 +146,7 @@ export default {
 }
 
 #label-container {
-  padding: 3rem;
+  padding: 2rem;
   font-size: 1.5rem;
   font-family: "Poor Story", cursive;
 }
