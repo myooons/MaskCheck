@@ -48,7 +48,7 @@ export default {
   methods: {
     // Load the image model and setup the webcam
     async init() {
-      const URL = "./model/";
+      const URL = "https://teachablemachine.withgoogle.com/models/27xOuCu9f/";
 
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
