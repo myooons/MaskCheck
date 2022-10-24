@@ -1,13 +1,12 @@
 <template>
-  <div class="min-h-screen bg-white pt-12">
+  <div class="template-box">
     <Head title="Camera" />
-    <div class="flex flex-col justify-center items-center">
-      <div>Teachable Machine Image Model</div>
+    <div class="content-box">
+      <div id="title-container">마스크를 쓰셨나요?</div>
 
       <div id="webcam-container"></div>
-      CAMERA
       <div id="label-container"></div>
-      NONE
+      <div id="result-container"></div>
     </div>
   </div>
 </template>
@@ -93,3 +92,56 @@ export default {
   },
 };
 </script>
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Poor+Story&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.template-box {
+  min-width: 375px;
+  width: 100vw;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #42b883;
+}
+
+.content-box {
+  width: 320px;
+  height: 600px;
+  border-radius: 1rem;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  background-color: #ffffff;
+}
+
+#title-container {
+  padding: 3rem;
+  font-size: 1.5rem;
+  font-family: "Poor Story", cursive;
+}
+
+#webcam-container {
+  width: 250px;
+  height: 250px;
+  border: 1px solid #35495e;
+}
+
+#label-container {
+  font-size: 1rem;
+  font-family: "Poor Story", cursive;
+}
+#result-container {
+  font-size: 3rem;
+  font-family: "Poor Story", cursive;
+}
+</style>
