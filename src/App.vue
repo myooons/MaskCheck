@@ -90,6 +90,7 @@ export default {
 
         if (prediction[0].probability > prediction[1].probability) {
           this.resultContainer = document.getElementById("result-container");
+          this.resultContainer.appendChild(document.createElement("div"));
 
           this.resultContainer.childNodes[0].innerHTML = "쓰셨군요!";
         } else {
