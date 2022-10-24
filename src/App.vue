@@ -1,28 +1,98 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div class="min-h-screen bg-white pt-12">
+    <Head title="Camera" />
+    <div class="flex flex-col justify-center items-center">
+      <div>Teachable Machine Image Model</div>
+      <button class="bg-blue-400 p-2 rounded" type="button" @click="init">
+        Start
+      </button>
+
+      <div id="webcam-container"></div>
+      CAMERA
+      <div id="label-container"></div>
+      NONE
+    </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { Head } from "@inertiajs/inertia-vue";
+import "@tensorflow/tfjs";
+import * as tmImage from "@teachablemachine/image";
 
 export default {
-  name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+    Head,
+  },
+  props: {
+    products: {
+      type: Object,
+      default: () => {
+        return {};
+      },
+    },
+  },
+  data() {
+    return {
+      model: null,
+      webcam: null,
+      labelContainer: null,
+      maxPredictions: null,
+      isIos: false,
+      image: null,
+    };
+  },
+  mounted() {
+    // this.init();
+  },
+  methods: {
+    // Load the image model and setup the webcam
+    async init() {
+      const URL = "./model/";
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      // load the model and metadata
+      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
+      // or files from your local hard drive
+      // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+      this.model = Object.freeze(await tmImage.load(modelURL, metadataURL));
+      this.maxPredictions = this.model.getTotalClasses();
+
+      // Convenience function to setup a webcam
+      const flip = true; // whether to flip the webcam
+      this.webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+      await this.webcam.setup(); // request access to the webcam
+      await this.webcam.play();
+      window.requestAnimationFrame(this.loop);
+
+      // append elements to the DOM
+      document
+        .getElementById("webcam-container")
+        .appendChild(this.webcam.canvas);
+      this.labelContainer = document.getElementById("label-container");
+      for (let i = 0; i < this.maxPredictions; i++) {
+        // and class labels
+        this.labelContainer.appendChild(document.createElement("div"));
+      }
+    },
+    async loop() {
+      this.webcam.update(); // update the webcam frame
+      await this.predict();
+      window.requestAnimationFrame(this.loop);
+    },
+    async predict() {
+      // run the webcam image through the image model
+      // predict can take in an image, video or canvas html element
+      console.log(this.webcam.canvas);
+      const prediction = await this.model.predict(this.webcam.canvas);
+      for (let i = 0; i < this.maxPredictions; i++) {
+        const classPrediction =
+          prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+        this.labelContainer.childNodes[i].innerHTML = classPrediction;
+      }
+    },
+  },
+};
+</script>
