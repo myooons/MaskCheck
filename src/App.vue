@@ -104,9 +104,10 @@ export default {
 
       // append elements to the DOM --> **before starting the webcam**
       // document.getElementById('webcam-container').appendChild(webcam.canvas); // just in case you want to use specifically the canvas
-      document
-        .getElementById("webcam-container")
-        .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
+
+      this.webcamContainer = document.getElementById("webcam-container");
+      this.webcamContainer.appendChild(this.webcam.webcam);
+      // webcam object needs to be added in any case to make this work on iOS
 
       // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
       let wc = document.getElementsByTagName("video")[0];
