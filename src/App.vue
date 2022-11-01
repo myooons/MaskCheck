@@ -202,7 +202,7 @@ export default {
   -webkit-transform: rotateY(180deg);
   -moz-transform: rotateY(180deg);
 
-  object-fit: none;
+  object-fit: cover;
   width: 250px;
   height: 250px;
 }
