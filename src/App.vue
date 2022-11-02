@@ -90,8 +90,8 @@ export default {
         const webCamVideo = document.getElementsByTagName("video")[0];
         webCamVideo.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise
         webCamVideo.muted = "true";
-        webCamVideo.style.width = width + "px";
-        webCamVideo.style.height = height + "px";
+        webCamVideo.style.width = 250 + "px";
+        webCamVideo.style.height = 250 + "px";
       } else {
         document
           .getElementById("webcam-container")
