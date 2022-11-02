@@ -55,38 +55,15 @@ export default {
     // Load the image model and setup the webcam
     async init() {
       const URL = "https://teachablemachine.withgoogle.com/models/27xOuCu9f/";
-      /*
-      const modelURL = URL + "model.json";
-      const metadataURL = URL + "metadata.json";
 
-      // load the model and metadata
-      // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-      // or files from your local hard drive
-      // Note: the pose library adds "tmImage" object to your window (window.tmImage)
-      this.model = Object.freeze(await tmImage.load(modelURL, metadataURL));
-      this.maxPredictions = this.model.getTotalClasses();
-
-      // Convenience function to setup a webcam
-      const flip = true; // whether to flip the webcam
-      this.webcam = new tmImage.Webcam(250, 250, flip); // width, height, flip
-      await this.webcam.setup(); // request access to the webcam
-      await this.webcam.play();
-      window.requestAnimationFrame(this.loop);
-
-      // append elements to the DOM
-      document
-        .getElementById("webcam-container")
-        .appendChild(this.webcam.canvas);
-      this.labelContainer = document.getElementById("label-container");
-      for (let i = 0; i < this.maxPredictions; i++) {
-        // and class labels
-        this.labelContainer.appendChild(document.createElement("div"));
+      let isIos = false;
+      // fix when running demo in ios, video will be frozen;
+      if (
+        window.navigator.userAgent.indexOf("iPhone") > -1 ||
+        window.navigator.userAgent.indexOf("iPad") > -1
+      ) {
+        isIos = true;
       }
-      this.resultContainer = document.getElementById("result-container");
-      this.resultContainer.appendChild(document.createElement("div"));
-    },
-
-    */
 
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
@@ -105,8 +82,21 @@ export default {
       // append elements to the DOM --> **before starting the webcam**
       // document.getElementById('webcam-container').appendChild(webcam.canvas); // just in case you want to use specifically the canvas
 
-      this.webcamContainer = document.getElementById("webcam-container");
-      this.webcamContainer.appendChild(this.webcam.webcam);
+      if (isIos) {
+        document
+          .getElementById("webcam-container")
+          .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
+        // grab video-object in any way you want and set the attributes
+        const webCamVideo = document.getElementsByTagName("video")[0];
+        webCamVideo.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise
+        webCamVideo.muted = "true";
+        webCamVideo.style.width = width + "px";
+        webCamVideo.style.height = height + "px";
+      } else {
+        document
+          .getElementById("webcam-container")
+          .appendChild(this.webcam.canvas);
+      }
       // webcam object needs to be added in any case to make this work on iOS
 
       // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
