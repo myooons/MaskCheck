@@ -75,35 +75,32 @@ export default {
       this.maxPredictions = this.model.getTotalClasses();
 
       // convenience function to setup a webcam
+      const width = 250;
+      const height = 250;
       const flip = true; // whether to flip the webcam
-      this.webcam = new tmImage.Webcam(250, 250, flip); // width, height, flip
+      this.webcam = new tmImage.Webcam(width, height, flip); // width, height, flip
       await this.webcam.setup({ facingMode: "user" }); // use "user" to use front-cam on mobile phones
 
       // append elements to the DOM --> **before starting the webcam**
       // document.getElementById('webcam-container').appendChild(webcam.canvas); // just in case you want to use specifically the canvas
 
-      if (isIos) {
-        document
-          .getElementById("webcam-container")
-          .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
-        // grab video-object in any way you want and set the attributes
-        const webCamVideo = document.getElementsByTagName("video")[0];
-        webCamVideo.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise
-        webCamVideo.muted = "true";
-        webCamVideo.style.width = 250 + "px";
-        webCamVideo.style.height = 250 + "px";
-      } else {
-        document
-          .getElementById("webcam-container")
-          .appendChild(this.webcam.canvas);
-      }
       // webcam object needs to be added in any case to make this work on iOS
+      this.webcamContainer = document.getElementById("webcam-container");
+      if (isIos) {
+        this.webcamContainer.appendChild(this.webcam.webcam);
+      } else {
+        this.webcamContainer.appendChild(this.webcam.canvas);
+      }
 
       // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
       let wc = document.getElementsByTagName("video")[0];
       wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
       wc.muted = "true";
       wc.id = "webcamVideo";
+      if (isIos) {
+        wc.style.width = width + "px";
+        wc.style.height = height + "px";
+      }
 
       // only now start the webcam --> **after video-object added to DOM and attributes are set**
       this.webcam.play();
@@ -125,7 +122,12 @@ export default {
     async predict() {
       // run the webcam image through the image model
       // predict can take in an image, video or canvas html element
-      const prediction = await this.model.predict(this.webcam.canvas);
+      if (isIos) {
+        const prediction = await this.model.predict(this.webcam.webcam);
+      } else {
+        const prediction = await this.model.predict(this.webcam.canvas);
+      }
+
       for (let i = 0; i < this.maxPredictions; i++) {
         const classPrediction =
           prediction[i].className + ": " + prediction[i].probability.toFixed(2);
