@@ -44,7 +44,7 @@ export default {
       webcam: null,
       labelContainer: null,
       maxPredictions: null,
-      isIos: false,
+      isIos: null,
       image: null,
     };
   },
@@ -53,21 +53,21 @@ export default {
   },
   methods: {
     // Load the image model and setup the webcam
-    async checkIos() {
-      if (
-        window.navigator.userAgent.indexOf("iPhone") > -1 ||
-        window.navigator.userAgent.indexOf("iPad") > -1
-      ) {
-        this.isIos = true;
-      }
-    },
-    // fix when running demo in ios, video will be frozen;
-
     async init() {
       const URL = "https://teachablemachine.withgoogle.com/models/27xOuCu9f/";
 
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
+
+      // fix when running demo in ios, video will be frozen;
+      if (
+        window.navigator.userAgent.indexOf("iPhone") > -1 ||
+        window.navigator.userAgent.indexOf("iPad") > -1
+      ) {
+        this.isIos = true;
+      } else {
+        this.isIos = false;
+      }
 
       // load the model and metadata
       // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
@@ -87,20 +87,20 @@ export default {
 
       // webcam object needs to be added in any case to make this work on iOS
       this.webcamContainer = document.getElementById("webcam-container");
+
       if (this.isIos) {
+        // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
         this.webcamContainer.appendChild(this.webcam.webcam);
+        let wc = document.getElementsByTagName("video")[0];
+        wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
+        wc.muted = "true";
+        wc.id = "webcamVideo";
+        if (this.isIos) {
+          wc.style.width = width + "px";
+          wc.style.height = height + "px";
+        }
       } else {
         this.webcamContainer.appendChild(this.webcam.canvas);
-      }
-
-      // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
-      let wc = document.getElementsByTagName("video")[0];
-      wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
-      wc.muted = "true";
-      wc.id = "webcamVideo";
-      if (this.isIos) {
-        wc.style.width = width + "px";
-        wc.style.height = height + "px";
       }
 
       // only now start the webcam --> **after video-object added to DOM and attributes are set**
@@ -123,10 +123,12 @@ export default {
     async predict() {
       // run the webcam image through the image model
       // predict can take in an image, video or canvas html element
+      let prediction;
+
       if (this.isIos) {
-        const prediction = await this.model.predict(this.webcam.webcam);
+        prediction = await this.model.predict(this.webcam.webcam);
       } else {
-        const prediction = await this.model.predict(this.webcam.canvas);
+        prediction = await this.model.predict(this.webcam.canvas);
       }
 
       for (let i = 0; i < this.maxPredictions; i++) {
