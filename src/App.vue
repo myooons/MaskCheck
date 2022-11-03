@@ -53,17 +53,18 @@ export default {
   },
   methods: {
     // Load the image model and setup the webcam
-    async init() {
-      const URL = "https://teachablemachine.withgoogle.com/models/27xOuCu9f/";
-
-      let isIos = false;
-      // fix when running demo in ios, video will be frozen;
+    async checkIos() {
       if (
         window.navigator.userAgent.indexOf("iPhone") > -1 ||
         window.navigator.userAgent.indexOf("iPad") > -1
       ) {
-        isIos = true;
+        this.isIos = true;
       }
+    },
+    // fix when running demo in ios, video will be frozen;
+
+    async init() {
+      const URL = "https://teachablemachine.withgoogle.com/models/27xOuCu9f/";
 
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
@@ -86,7 +87,7 @@ export default {
 
       // webcam object needs to be added in any case to make this work on iOS
       this.webcamContainer = document.getElementById("webcam-container");
-      if (isIos) {
+      if (this.isIos) {
         this.webcamContainer.appendChild(this.webcam.webcam);
       } else {
         this.webcamContainer.appendChild(this.webcam.canvas);
@@ -97,7 +98,7 @@ export default {
       wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
       wc.muted = "true";
       wc.id = "webcamVideo";
-      if (isIos) {
+      if (this.isIos) {
         wc.style.width = width + "px";
         wc.style.height = height + "px";
       }
@@ -122,7 +123,7 @@ export default {
     async predict() {
       // run the webcam image through the image model
       // predict can take in an image, video or canvas html element
-      if (isIos) {
+      if (this.isIos) {
         const prediction = await this.model.predict(this.webcam.webcam);
       } else {
         const prediction = await this.model.predict(this.webcam.canvas);
