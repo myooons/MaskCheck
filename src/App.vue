@@ -45,6 +45,7 @@ export default {
       labelContainer: null,
       maxPredictions: null,
       image: null,
+      isIos: false,
     };
   },
   beforeMount() {
@@ -58,13 +59,12 @@ export default {
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 
-      let isIos = false;
       // fix when running demo in ios, video will be frozen;
       if (
         window.navigator.userAgent.indexOf("iPhone") > -1 ||
         window.navigator.userAgent.indexOf("iPad") > -1
       ) {
-        isIos = true;
+        this.isIos = true;
       }
 
       // load the model and metadata
@@ -81,7 +81,7 @@ export default {
       await this.webcam.setup({ facingMode: "user" }); // use "user" to use front-cam on mobile phones
 
       // append elements to the DOM --> **before starting the webcam**
-      if (isIos) {
+      if (this.isIos) {
         document
           .getElementById("webcam-container")
           .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
@@ -119,7 +119,7 @@ export default {
       // predict can take in an image, video or canvas html element
       let prediction;
 
-      if (isIos) {
+      if (this.isIos) {
         prediction = await this.model.predict(this.webcam.webcam);
       } else {
         prediction = await this.model.predict(this.webcam.canvas);
