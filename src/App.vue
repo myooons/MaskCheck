@@ -49,10 +49,10 @@ export default {
   },
   beforeCreate() {},
   created() {},
-  beforeMount() {},
-  mounted() {
+  beforeMount() {
     this.init();
   },
+  mounted() {},
   beforeUpdate() {},
   update() {},
   beforeDestroy() {},
@@ -92,7 +92,7 @@ export default {
           .getElementById("webcam-container")
           .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
         // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
-        let wc = document.getElementsByTagName("video")[0];
+        const wc = document.getElementsByTagName("video")[0];
         wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
         wc.muted = "true";
         wc.style.width = width + "px";
@@ -120,11 +120,10 @@ export default {
       await this.predict();
       window.requestAnimationFrame(this.loop);
     },
+    // run the webcam image through the image model
     async predict() {
-      // run the webcam image through the image model
       // predict can take in an image, video or canvas html element
       let prediction;
-
       if (this.isIos) {
         prediction = await this.model.predict(this.webcam.webcam);
       } else {
