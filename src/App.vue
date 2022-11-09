@@ -44,11 +44,10 @@ export default {
       webcam: null,
       labelContainer: null,
       maxPredictions: null,
-      isIos: null,
       image: null,
     };
   },
-  mounted() {
+  beforeMount() {
     this.init();
   },
   methods: {
@@ -59,14 +58,13 @@ export default {
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
 
+      let isIos = false;
       // fix when running demo in ios, video will be frozen;
       if (
         window.navigator.userAgent.indexOf("iPhone") > -1 ||
         window.navigator.userAgent.indexOf("iPad") > -1
       ) {
-        this.isIos = true;
-      } else {
-        this.isIos = false;
+        isIos = true;
       }
 
       // load the model and metadata
@@ -83,29 +81,21 @@ export default {
       await this.webcam.setup({ facingMode: "user" }); // use "user" to use front-cam on mobile phones
 
       // append elements to the DOM --> **before starting the webcam**
-      // document.getElementById('webcam-container').appendChild(webcam.canvas); // just in case you want to use specifically the canvas
-
-      // webcam object needs to be added in any case to make this work on iOS
-      this.webcamContainer = document.getElementById("webcam-container");
-
-      if (this.isIos) {
+      if (isIos) {
+        document
+          .getElementById("webcam-container")
+          .appendChild(this.webcam.webcam); // webcam object needs to be added in any case to make this work on iOS
         // grab video-object in any way you want and set the attributes --> **"muted" and "playsinline"**
-        this.webcamContainer.appendChild(this.webcam.webcam);
         let wc = document.getElementsByTagName("video")[0];
         wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
         wc.muted = "true";
-        wc.id = "webcamVideo";
-        if (this.isIos) {
-          wc.style.width = width + "px";
-          wc.style.height = height + "px";
-        }
+        wc.style.width = width + "px";
+        wc.style.height = height + "px";
       } else {
-        this.webcamContainer.appendChild(this.webcam.canvas);
+        document
+          .getElementById("webcam-container")
+          .appendChild(this.webcam.canvas);
       }
-
-      // only now start the webcam --> **after video-object added to DOM and attributes are set**
-      this.webcam.play();
-      window.requestAnimationFrame(this.loop); // update canvas by loop-function
 
       this.labelContainer = document.getElementById("label-container");
       for (let i = 0; i < this.maxPredictions; i++) {
@@ -114,6 +104,10 @@ export default {
       }
       this.resultContainer = document.getElementById("result-container");
       this.resultContainer.appendChild(document.createElement("div"));
+
+      // only now start the webcam --> **after video-object added to DOM and attributes are set**
+      this.webcam.play();
+      window.requestAnimationFrame(this.loop); // update canvas by loop-function
     },
     async loop() {
       this.webcam.update(); // update the webcam frame
@@ -125,7 +119,7 @@ export default {
       // predict can take in an image, video or canvas html element
       let prediction;
 
-      if (this.isIos) {
+      if (isIos) {
         prediction = await this.model.predict(this.webcam.webcam);
       } else {
         prediction = await this.model.predict(this.webcam.canvas);
