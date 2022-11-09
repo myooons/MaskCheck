@@ -44,13 +44,19 @@ export default {
       webcam: null,
       labelContainer: null,
       maxPredictions: null,
-      image: null,
       isIos: false,
     };
   },
-  beforeMount() {
+  beforeCreate() {},
+  created() {},
+  beforeMount() {},
+  mounted() {
     this.init();
   },
+  beforeUpdate() {},
+  update() {},
+  beforeDestroy() {},
+  destroyed() {},
   methods: {
     // Load the image model and setup the webcam
     async init() {
@@ -96,7 +102,7 @@ export default {
           .getElementById("webcam-container")
           .appendChild(this.webcam.canvas);
       }
-
+      // append elements to the dom
       this.labelContainer = document.getElementById("label-container");
       for (let i = 0; i < this.maxPredictions; i++) {
         // and class labels
