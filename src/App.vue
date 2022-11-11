@@ -48,10 +48,10 @@ export default {
     };
   },
   beforeCreate() {},
-  created() {},
-  beforeMount() {
+  created() {
     this.init();
   },
+  beforeMount() {},
   mounted() {},
   beforeUpdate() {},
   update() {},
