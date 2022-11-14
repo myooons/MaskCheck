@@ -47,12 +47,12 @@ export default {
       isIos: false,
     };
   },
-  beforeCreate() {
-    this.init();
-  },
+  beforeCreate() {},
   created() {},
   beforeMount() {},
-  mounted() {},
+  mounted() {
+    this.init();
+  },
   beforeUpdate() {},
   update() {},
   beforeDestroy() {},
