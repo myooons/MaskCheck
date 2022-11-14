@@ -47,10 +47,10 @@ export default {
       isIos: false,
     };
   },
-  beforeCreate() {},
-  created() {
+  beforeCreate() {
     this.init();
   },
+  created() {},
   beforeMount() {},
   mounted() {},
   beforeUpdate() {},
