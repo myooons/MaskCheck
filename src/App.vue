@@ -95,6 +95,7 @@ export default {
         const wc = document.getElementsByTagName("video")[0];
         wc.setAttribute("playsinline", true); // written with "setAttribute" bc. iOS buggs otherwise :-)
         wc.muted = "true";
+        wc.id = "webcamVideo";
         wc.style.width = width + "px";
         wc.style.height = height + "px";
       } else {
